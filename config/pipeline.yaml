@@ -1,0 +1,27 @@
+limits:
+  daily_commits: 200
+  backtrack_commits: 50
+  max_sources: 3
+  max_excerpt_words: 300
+  max_files_listed: 30
+
+dedupe:
+  tfidf_similarity: 0.92
+  max_paragraphs: 3
+
+search:
+  keywords_per_day: 150
+  pages_per_keyword: 2
+  results_per_page: 10
+
+thumbnails:
+  max_size_px: 512
+  max_kb: 200
+  formats:
+    - jpeg
+
+confidence:
+  low_threshold: 0.5
+
+version:
+  hotfix_tag_required: true
