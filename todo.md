@@ -112,42 +112,42 @@
 ## M4 数据模型（Markdown per item）+ 校验 + 稳定 ID
 **Deps:** M1, M3
 
-- [ ] **M4.1 定义 Front Matter Schema（必填字段 + 类型）**  
+- [x] **M4.1 定义 Front Matter Schema（必填字段 + 类型）**  
   **Deps:** M3.1  
   背景：源数据是 Markdown，每条更新项必须可校验、可追溯、可重建。  
-  - [ ] **M4.1.1 列出字段与枚举**（change_type、可信度 high/low、ai 标注结构等）  
+  - [x] **M4.1.1 列出字段与枚举**（change_type、可信度 high/low、ai 标注结构等）  
     **Deps:** M3.1.3  
-  - [ ] **M4.1.2 编写 schema（JSON Schema 或自定义校验逻辑）**  
+  - [x] **M4.1.2 编写 schema（JSON Schema 或自定义校验逻辑）**  
     **Deps:** M4.1.1  
 
-- [ ] **M4.2 Markdown 读写库与模板**  
+- [x] **M4.2 Markdown 读写库与模板**  
   **Deps:** M4.1  
   背景：要稳定写回（利于 git diff），并固定正文结构（Evidence first）。  
-  - [ ] **M4.2.1 选型并封装 front-matter 解析与序列化**  
+  - [x] **M4.2.1 选型并封装 front-matter 解析与序列化**  
     **Deps:** M4.1.2  
-  - [ ] **M4.2.2 定义正文模板**：Evidence（中英）→ GitHub → AI  
+  - [x] **M4.2.2 定义正文模板**：Evidence（中英）→ GitHub → AI  
     **Deps:** M4.2.1  
-  - [ ] **M4.2.3 写入格式稳定性**（字段排序、缩进、换行风格）  
+  - [x] **M4.2.3 写入格式稳定性**（字段排序、缩进、换行风格）  
     **Deps:** M4.2.2  
 
-- [ ] **M4.3 稳定 ID 生成器（内容哈希，不含 title）**  
+- [x] **M4.3 稳定 ID 生成器（内容哈希，不含 title）**  
   **Deps:** M4.1  
   背景：ID 用于去重/关联缩略图/索引 key；输入为 version + 主URL列表 + github_refs。  
-  - [ ] **M4.3.1 定义 URL 规范化规则**（去 fragment、统一 scheme、去追踪参数等）  
+  - [x] **M4.3.1 定义 URL 规范化规则**（去 fragment、统一 scheme、去追踪参数等）  
     **Deps:** M4.1.2  
-  - [ ] **M4.3.2 实现 hash 计算**（sha256，取前 N 位）  
+  - [x] **M4.3.2 实现 hash 计算**（sha256，取前 N 位）  
     **Deps:** M4.3.1  
-  - [ ] **M4.3.3 实现“主 URL 选择”接口**（按可信度权重最高）  
+  - [x] **M4.3.3 实现“主 URL 选择”接口**（按可信度权重最高）  
     **Deps:** M4.3.1  
 
-- [ ] **M4.4 数据校验 CLI**  
+- [x] **M4.4 数据校验 CLI**  
   **Deps:** M4.2, M4.3  
   背景：Actions 构建前后都要能验证 `data/items` 的一致性。  
-  - [ ] **M4.4.1 `validate-items`：遍历并校验 schema**  
+  - [x] **M4.4.1 `validate-items`：遍历并校验 schema**  
     **Deps:** M4.1.2  
-  - [ ] **M4.4.2 校验 sources 上限（<=3）与 github_refs 不计入 sources**  
+  - [x] **M4.4.2 校验 sources 上限（<=3）与 github_refs 不计入 sources**  
     **Deps:** M4.4.1  
-  - [ ] **M4.4.3 校验缺失字段的错误输出（可读日志）**  
+  - [x] **M4.4.3 校验缺失字段的错误输出（可读日志）**  
     **Deps:** M4.4.2  
 
 ---
