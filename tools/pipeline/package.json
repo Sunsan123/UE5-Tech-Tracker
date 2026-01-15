@@ -1,0 +1,13 @@
+{
+  "name": "ue5-tech-tracker-pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate:items": "node src/validate-items.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "yaml": "^2.4.5"
+  }
+}
