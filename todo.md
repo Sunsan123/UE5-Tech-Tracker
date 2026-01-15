@@ -89,22 +89,22 @@
 ## M3 配置体系（module/tag/抓取策略）与可扩展点
 **Deps:** M1, M2
 
-- [ ] **M3.1 配置文件结构定义**  
+- [x] **M3.1 配置文件结构定义**  
   **Deps:** M1.1.2  
   背景：PRD 要求你可扩展模块目录与同义词表，且 pipeline 规则可调整。  
-  - [ ] **M3.1.1 定义 `config/module_mapping.yaml`**（最长匹配优先规则）  
+  - [x] **M3.1.1 定义 `config/module_mapping.yaml`**（最长匹配优先规则）  
     **Deps:** M1.1.2  
-  - [ ] **M3.1.2 定义 `config/tag_synonyms.yaml`**（归一化到缩写）  
+  - [x] **M3.1.2 定义 `config/tag_synonyms.yaml`**（归一化到缩写）  
     **Deps:** M1.1.2  
-  - [ ] **M3.1.3 定义 `config/pipeline.yaml`**（上限/阈值/配额/关键词权重模块列表）  
+  - [x] **M3.1.3 定义 `config/pipeline.yaml`**（上限/阈值/配额/关键词权重模块列表）  
     **Deps:** M1.1.2  
 
-- [ ] **M3.2 前端读取配置（用于 UI 展示与枚举）**  
+- [x] **M3.2 前端读取配置（用于 UI 展示与枚举）**  
   **Deps:** M3.1, M2.2  
   背景：模块目录页需要模块清单；前端应能显示 module_system 目录（可由 config 驱动）。  
-  - [ ] **M3.2.1 构建期将 YAML 转成可 import 的 TS/JS 模块**（避免 file:// fetch）  
+  - [x] **M3.2.1 构建期将 YAML 转成可 import 的 TS/JS 模块**（避免 file:// fetch）  
     **Deps:** M3.1.1  
-  - [ ] **M3.2.2 模块目录页用配置渲染模块列表**（支持后续新增）  
+  - [x] **M3.2.2 模块目录页用配置渲染模块列表**（支持后续新增）  
     **Deps:** M3.2.1, M2.2.3  
 
 ---

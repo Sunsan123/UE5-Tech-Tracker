@@ -1,0 +1,37 @@
+tags:
+  GI:
+    synonyms:
+      - global illumination
+      - gi
+      - 全局光照
+  RT:
+    synonyms:
+      - ray tracing
+      - rtx
+      - 光线追踪
+  VSM:
+    synonyms:
+      - virtual shadow maps
+      - virtual shadow map
+      - 虚拟阴影贴图
+  VSMC:
+    synonyms:
+      - virtual shadow map cache
+      - vsm cache
+      - 阴影缓存
+  LOD:
+    synonyms:
+      - level of detail
+      - 细节层级
+  TSR:
+    synonyms:
+      - temporal super resolution
+      - 时序超分辨率
+  HZB:
+    synonyms:
+      - hierarchical z-buffer
+      - 层级 z 缓冲
+  SSS:
+    synonyms:
+      - subsurface scattering
+      - 次表面散射

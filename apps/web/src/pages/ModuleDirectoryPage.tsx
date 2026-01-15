@@ -10,27 +10,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import BilingualBlock from "../components/BilingualBlock";
-
-const modules = [
-  {
-    key: "lumen",
-    nameZh: "Lumen 全局光照",
-    nameEn: "Lumen Global Illumination",
-    count: 128
-  },
-  {
-    key: "nanite",
-    nameZh: "Nanite 虚拟几何",
-    nameEn: "Nanite Virtualized Geometry",
-    count: 92
-  },
-  {
-    key: "rendering",
-    nameZh: "渲染总览",
-    nameEn: "Rendering Overview",
-    count: 210
-  }
-];
+import { moduleSystems } from "../data/config";
 
 const ModuleDirectoryPage = () => {
   return (
@@ -45,20 +25,31 @@ const ModuleDirectoryPage = () => {
         />
       </Box>
       <Grid container spacing={2}>
-        {modules.map((module) => (
-          <Grid item xs={12} md={4} key={module.key}>
+        {moduleSystems.map((module) => {
+          const countLabel =
+            typeof module.item_count === "number"
+              ? `${module.item_count} 条更新`
+              : "更新数量待同步";
+          return (
+            <Grid item xs={12} md={4} key={module.id}>
             <Card>
-              <CardActionArea component={Link} to={`/module/${module.key}`}>
+              <CardActionArea component={Link} to={`/module/${module.id}`}>
                 <CardContent>
                   <Stack spacing={1}>
-                    <BilingualBlock zh={module.nameZh} en={module.nameEn} />
-                    <Chip label={`${module.count} 条更新`} size="small" />
+                    <BilingualBlock zh={module.name_zh} en={module.name_en} />
+                    <BilingualBlock
+                      zh={module.description_zh}
+                      en={module.description_en}
+                      variant="body2"
+                    />
+                    <Chip label={countLabel} size="small" />
                   </Stack>
                 </CardContent>
               </CardActionArea>
             </Card>
           </Grid>
-        ))}
+          );
+        })}
       </Grid>
     </Stack>
   );
