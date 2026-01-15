@@ -1,0 +1,5 @@
+node_modules/
+site/
+apps/web/dist/
+apps/web/node_modules/
+.DS_Store
