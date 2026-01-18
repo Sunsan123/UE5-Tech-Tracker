@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Chip,
@@ -9,16 +10,20 @@ import {
   Stack,
   Typography
 } from "@mui/material";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import BilingualBlock from "../components/BilingualBlock";
 import { loadModuleChunk } from "../data/chunk-loaders";
 import { indexItems } from "../data/index-base";
 import type { ModuleItem } from "../data/types";
+import { useFavoritesStore } from "../store/favoritesStore";
 
 const ItemDetailPage = () => {
   const { itemId = "item" } = useParams();
   const [item, setItem] = useState<ModuleItem | null>(null);
+  const favorites = useFavoritesStore((state) => state.items);
+  const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
 
   const indexItem = useMemo(
     () => indexItems.find((entry) => entry.id === itemId),
@@ -55,6 +60,7 @@ const ItemDetailPage = () => {
   const filePaths = item.file_paths ?? [];
   const visibleFiles = filePaths.slice(0, 30);
   const remainingFiles = filePaths.length - visibleFiles.length;
+  const isFavorite = favorites.some((entry) => entry.id === itemId);
 
   return (
     <Stack spacing={3}>
@@ -62,10 +68,19 @@ const ItemDetailPage = () => {
         <Typography variant="h4" gutterBottom>
           更新详情 · {itemId}
         </Typography>
-        <Stack direction="row" spacing={1} flexWrap="wrap">
+        <Stack direction="row" spacing={1} flexWrap="wrap" alignItems="center">
           <Chip label={`版本 ${item.version}`} size="small" />
           <Chip label={`模块：${item.module_system.join(", ")}`} size="small" />
           <Chip label={`改动类型：${item.change_type}`} size="small" />
+          <Button
+            size="small"
+            variant={isFavorite ? "contained" : "outlined"}
+            color={isFavorite ? "secondary" : "primary"}
+            startIcon={isFavorite ? <Favorite /> : <FavoriteBorder />}
+            onClick={() => toggleFavorite(itemId)}
+          >
+            {isFavorite ? "已收藏" : "收藏"}
+          </Button>
         </Stack>
         {item.thumbs.length > 0 ? (
           <Stack direction="row" spacing={2} marginTop={2} flexWrap="wrap">

@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "run": "node src/run.mjs",
+    "build:daily": "node src/daily-report.mjs",
+    "logs:init": "node src/run.mjs",
     "validate:items": "node src/validate-items.mjs",
     "build:module-map": "node src/generate-module-map.mjs",
     "build:versions": "node src/release-notes.mjs"

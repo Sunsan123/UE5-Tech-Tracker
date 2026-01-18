@@ -10,10 +10,24 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import BilingualBlock from "../components/BilingualBlock";
+import { buildLogs, type BuildLog } from "../data/build-logs";
 import { moduleSystems } from "../data/config";
 import { indexItems } from "../data/index-base";
 
 const ModuleDirectoryPage = () => {
+  const latestBuild = buildLogs[0];
+  const statusLabel = (status: BuildLog["status"]) => {
+    switch (status) {
+      case "success":
+        return "成功";
+      case "partial":
+        return "部分失败";
+      case "failed":
+        return "失败";
+      default:
+        return "未知";
+    }
+  };
   const moduleStats = indexItems.reduce<Record<string, { count: number; latest?: string }>>(
     (acc, item) => {
       const modules = Array.isArray(item.module_system)
@@ -43,6 +57,25 @@ const ModuleDirectoryPage = () => {
           zh="按模块浏览 UE5 版本更新，默认显示最新大版本条目。"
           en="Browse UE5 updates by module, showing the latest major version by default."
         />
+        {latestBuild ? (
+          <Card sx={{ marginTop: 2 }}>
+            <CardContent>
+              <Stack spacing={1}>
+                <Typography variant="body1">
+                  最近一次构建状态：{statusLabel(latestBuild.status)}
+                </Typography>
+                {latestBuild.incomplete_data ? (
+                  <Typography variant="body2" color="warning.main">
+                    数据可能不完整（截断/配额耗尽）。
+                  </Typography>
+                ) : null}
+                <Typography variant="body2" color="text.secondary">
+                  时间：{latestBuild.finished_at ?? latestBuild.started_at}
+                </Typography>
+              </Stack>
+            </CardContent>
+          </Card>
+        ) : null}
       </Box>
       <Grid container spacing={2}>
         {moduleSystems.map((module) => {
