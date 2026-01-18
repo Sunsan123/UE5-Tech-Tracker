@@ -1,20 +1,12 @@
 # UE5 Tech Tracker
 
-UE5 Tech Tracker 是一个离线可打开的静态站点，用于按模块浏览 UE5 版本更新、证据链与代码定位信息。
+## 简介
 
-## 目录结构
+UE5 Tech Tracker 是一个离线可打开的静态站点，面向技术美术与渲染工程师，提供从 UE5.0 起至最新版本的更新追踪。项目以“模块浏览”为核心路径，聚合来自 Epic 官方 Release Notes、GitHub（UnrealEngine 私有仓库）及社区资料的证据链，并提供源码文件路径、PR/Issue 引用与 AI 生成的摘要/风险提示，帮助快速理解变化与影响范围。
 
-- `apps/web/`：前端 SPA（React + Vite + MUI + Zustand）
-- `tools/pipeline/`：抓取与构建脚本（Node/Python）
-- `data/items/`：更新项 Markdown 源数据
-- `data/meta/`：版本元数据
-- `config/`：模块映射、标签同义词、抓取策略配置
-- `assets/thumbs/`：缩略图缓存
-- `reports/daily/`：每日更新报告
-- `reports/logs/`：构建日志
-- `state/`：增量游标与运行状态
+## 使用教程
 
-## 本地开发
+### 1. 本地开发预览（前端）
 
 ```bash
 cd apps/web
@@ -24,7 +16,7 @@ npm run dev
 
 浏览器打开 `http://localhost:4173/#/` 预览模块目录页面。
 
-## 构建与数据生成
+### 2. 生成数据与构建离线站点
 
 前端离线数据依赖于 `data/` 与 `reports/` 目录，建议先运行 pipeline 生成日报与日志，再构建站点：
 
@@ -42,19 +34,9 @@ npm install
 npm run build
 ```
 
-### 常用脚本
+构建完成后打开 `apps/web/dist/index.html`（或构建输出目录）即可在 `file://` 环境离线访问。
 
-- `tools/pipeline/src/run.mjs`：流水线主入口（不会因单步失败而中断）。
-- `tools/pipeline/src/daily-report.mjs`：生成日报（输出到 `reports/daily/`）。
-- `apps/web/scripts/generate-data.mjs`：生成前端离线数据模块（`apps/web/src/data`）。
-
-## 配置说明
-
-- `config/module_mapping.yaml`：`module_code → module_system` 映射规则（最长匹配）。
-- `config/tag_synonyms.yaml`：标签归一化表。
-- `config/scoring.yaml`：P1 重要性打分规则（影响列表排序与日报 Top10）。
-
-## GitHub Actions（自动化）
+### 3. GitHub Actions 自动化
 
 仓库内置 `Pipeline` workflow，每日 UTC 0:00 执行一次，并支持手动触发。Secrets 需配置：
 
@@ -63,6 +45,73 @@ npm run build
 - `GOOGLE_CSE_KEY` / `GOOGLE_CSE_CX`：Google CSE 检索配额。
 
 构建完成后会自动提交更新内容（使用 `GITHUB_TOKEN` 写入）。
+
+## 项目架构
+
+### 目录结构
+
+- `apps/web/`：前端 SPA（React + Vite + MUI + Zustand）
+- `tools/pipeline/`：抓取与构建脚本（Node/Python）
+- `data/items/`：更新项 Markdown 源数据
+- `data/meta/`：版本元数据
+- `config/`：模块映射、标签同义词、抓取策略配置
+- `assets/thumbs/`：缩略图缓存
+- `reports/daily/`：每日更新报告
+- `reports/logs/`：构建日志
+- `state/`：增量游标与运行状态
+
+### 数据与流水线
+
+- **数据源**：Release Notes/What’s New、UnrealEngine GitHub（commit/PR/Issue）、社区与第三方资料（Google CSE）。  
+- **构建期处理**：增量抓取、证据抽取（≤300 词）、近重复合并、模块映射、P1 重要性打分、缩略图缓存。  
+- **落盘格式**：`data/items/<item_id>.md`（Front Matter + Evidence/GitHub/AI 正文），同时生成索引与模块分块。  
+- **前端交付**：构建期将数据打包为可 import 的 JS 模块，确保 `file://` 离线可用。  
+
+### 常用脚本
+
+- `tools/pipeline/src/run.mjs`：流水线主入口（不会因单步失败而中断）。
+- `tools/pipeline/src/daily-report.mjs`：生成日报（输出到 `reports/daily/`）。
+- `apps/web/scripts/generate-data.mjs`：生成前端离线数据模块（`apps/web/src/data`）。
+
+### 配置说明
+
+- `config/module_mapping.yaml`：`module_code → module_system` 映射规则（最长匹配）。
+- `config/tag_synonyms.yaml`：标签归一化表。
+- `config/scoring.yaml`：P1 重要性打分规则（影响列表排序与日报 Top10）。
+
+## 详细功能
+
+### 1. 模块浏览（黄金路径）
+
+- 模块目录 → 模块页 → 详情页的完整路径。  
+- 模块页默认展示最新大版本 `x.y` 的前 20 条更新项，并支持无限滚动与模块内搜索（标题/摘要/标签）。  
+- 排序默认按版本倒序，同版本内按 P1 重要性排序。  
+
+### 2. 更新项详情（Evidence First）
+
+- 详情页以证据为先：来源卡片（中英对照）、GitHub 引用、AI 解读区。  
+- 来源卡片展示 ≤300 词摘录，包含中文翻译并标注 AI 翻译。  
+- GitHub 引用支持 commit/PR/Issue，并展示文件路径列表（默认 30 条，超出提示）。  
+
+### 3. 全局搜索
+
+- FlexSearch 离线索引，支持标题/摘要/标签/模块/版本等字段检索。  
+- 搜索结果卡片提供命中高亮片段，并以 P1 重要性为主排序。  
+
+### 4. 收藏
+
+- 使用 `localStorage` 存储收藏，详情页可收藏/取消收藏。  
+- 收藏页按收藏时间倒序展示。  
+
+### 5. 日报与日志
+
+- 每日生成日报（按模块分组、每模块最多 10 条）。  
+- 构建日志页记录每次构建摘要与错误样例，首页显示最近一次构建状态与“数据可能不完整”提示。  
+
+### 6. 自动化与可追溯
+
+- GitHub Actions 定时抓取与构建，允许部分失败也发布。  
+- 支持增量抓取（回溯窗口 + 上限），并记录缺失/截断状态。  
 
 ## 架构草图（V1）
 
