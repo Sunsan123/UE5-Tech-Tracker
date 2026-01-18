@@ -92,7 +92,8 @@ const ModuleDirectoryPage = () => {
                       <BilingualBlock
                         zh={module.description_zh}
                         en={module.description_en}
-                        variant="body2"
+                        zhVariant="body2"
+                        enVariant="body2"
                       />
                       <Chip label={countLabel} size="small" />
                       {latestLabel ? (
