@@ -1,0 +1,20 @@
+{
+  "versions": [
+    {
+      "version": "5.4",
+      "published_at": "2024-04-23",
+      "release_notes_url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-4-release-notes"
+    },
+    {
+      "version": "5.3",
+      "published_at": "2023-09-06",
+      "release_notes_url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-3-release-notes"
+    },
+    {
+      "version": "5.2",
+      "published_at": "2023-05-11",
+      "release_notes_url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-2-release-notes"
+    }
+  ],
+  "latest_major": "5.4"
+}

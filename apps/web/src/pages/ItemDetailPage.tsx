@@ -5,14 +5,56 @@ import {
   Chip,
   Divider,
   Grid,
+  Link,
   Stack,
   Typography
 } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import BilingualBlock from "../components/BilingualBlock";
+import { loadModuleChunk } from "../data/chunk-loaders";
+import { indexItems } from "../data/index-base";
+import type { ModuleItem } from "../data/types";
 
 const ItemDetailPage = () => {
   const { itemId = "item" } = useParams();
+  const [item, setItem] = useState<ModuleItem | null>(null);
+
+  const indexItem = useMemo(
+    () => indexItems.find((entry) => entry.id === itemId),
+    [itemId]
+  );
+
+  useEffect(() => {
+    let mounted = true;
+    const moduleId = indexItem?.module_system?.[0];
+    if (!moduleId) {
+      setItem(null);
+      return () => undefined;
+    }
+    loadModuleChunk<ModuleItem[]>(moduleId).then((data) => {
+      if (!mounted) {
+        return;
+      }
+      const found = data?.find((entry) => entry.id === itemId) ?? null;
+      setItem(found);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [itemId, indexItem?.module_system]);
+
+  if (!item) {
+    return (
+      <Stack spacing={3}>
+        <Typography variant="h5">未找到对应更新项。</Typography>
+      </Stack>
+    );
+  }
+
+  const filePaths = item.file_paths ?? [];
+  const visibleFiles = filePaths.slice(0, 30);
+  const remainingFiles = filePaths.length - visibleFiles.length;
 
   return (
     <Stack spacing={3}>
@@ -21,26 +63,48 @@ const ItemDetailPage = () => {
           更新详情 · {itemId}
         </Typography>
         <Stack direction="row" spacing={1} flexWrap="wrap">
-          <Chip label="版本 5.4" size="small" />
-          <Chip label="模块：Lumen" size="small" />
-          <Chip label="改动类型：性能" size="small" />
+          <Chip label={`版本 ${item.version}`} size="small" />
+          <Chip label={`模块：${item.module_system.join(", ")}`} size="small" />
+          <Chip label={`改动类型：${item.change_type}`} size="small" />
         </Stack>
+        {item.thumbs.length > 0 ? (
+          <Stack direction="row" spacing={2} marginTop={2} flexWrap="wrap">
+            {item.thumbs.slice(0, 3).map((thumb) => (
+              <Box
+                component="img"
+                key={thumb}
+                src={thumb}
+                alt={item.title}
+                sx={{ width: 200, borderRadius: 1, border: "1px solid #e0e0e0" }}
+              />
+            ))}
+          </Stack>
+        ) : null}
       </Box>
 
       <Stack spacing={2}>
         <Typography variant="h5">证据来源</Typography>
         <Grid container spacing={2}>
-          {[1, 2].map((index) => (
-            <Grid item xs={12} md={6} key={index}>
+          {item.sources.map((source) => (
+            <Grid item xs={12} md={6} key={source.url}>
               <Card>
                 <CardContent>
                   <Stack spacing={1.5}>
-                    <Typography variant="subtitle1">来源 {index}</Typography>
+                    <Typography variant="subtitle1">{source.title}</Typography>
                     <BilingualBlock
-                      zh="【AI 翻译】此处展示 300 词以内的中文证据摘录。"
-                      en="This section shows the original English excerpt (up to 300 words)."
+                      zh={`${source.excerpt_zh}（${source.translation_note}）`}
+                      en={source.excerpt_en}
                     />
-                    <Chip label="高可信" size="small" color="success" />
+                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                      <Chip
+                        label={source.credibility === "high" ? "高可信" : "低可信"}
+                        size="small"
+                        color={source.credibility === "high" ? "success" : "warning"}
+                      />
+                      <Link href={source.url} target="_blank" rel="noreferrer">
+                        <Chip label="来源链接" size="small" variant="outlined" />
+                      </Link>
+                    </Stack>
                   </Stack>
                 </CardContent>
               </Card>
@@ -54,21 +118,31 @@ const ItemDetailPage = () => {
         <Card>
           <CardContent>
             <Stack spacing={1.5}>
-              <Typography variant="body1">PR #12345 · Commit abcdef</Typography>
+              <Stack spacing={0.5}>
+                {item.github_refs.map((ref) => (
+                  <Typography key={`${ref.type}-${ref.id}`} variant="body2">
+                    {ref.type.toUpperCase()} {ref.id} · {ref.title ?? ""}{" "}
+                    <Link href={ref.url} target="_blank" rel="noreferrer">
+                      查看
+                    </Link>
+                  </Typography>
+                ))}
+              </Stack>
               <Divider />
               <Typography variant="body2" color="text.secondary">
                 变更文件路径（前 30 条）：
               </Typography>
               <Stack spacing={0.5}>
-                {[
-                  "Engine/Source/Runtime/Renderer/Private/Lumen/LumenScene.cpp",
-                  "Engine/Source/Runtime/Renderer/Private/Lumen/LumenRadianceCache.cpp",
-                  "Engine/Shaders/Private/Lumen/LumenScene.usf"
-                ].map((path) => (
+                {visibleFiles.map((path) => (
                   <Typography key={path} variant="body2">
                     {path}
                   </Typography>
                 ))}
+                {remainingFiles > 0 ? (
+                  <Typography variant="body2" color="text.secondary">
+                    还有 {remainingFiles} 个文件未展示
+                  </Typography>
+                ) : null}
               </Stack>
             </Stack>
           </CardContent>
@@ -81,16 +155,19 @@ const ItemDetailPage = () => {
           <CardContent>
             <Stack spacing={1}>
               <BilingualBlock
-                zh="【AI 生成】性能收益：提升 Lumen 光照更新速度。"
-                en="[AI Generated] Performance: improves Lumen update speed."
+                zh={item.benefits.summary}
+                en={item.benefits.summary}
               />
               <Divider />
               <Typography variant="body2" color="text.secondary">
                 注意事项：
               </Typography>
               <Stack spacing={0.5}>
-                <Typography variant="body2">- 【AI 推断】大场景可能增加显存占用。</Typography>
-                <Typography variant="body2">- 【AI 推断】需关注 RHI 兼容性。</Typography>
+                {item.risks.map((risk) => (
+                  <Typography key={risk} variant="body2">
+                    - {risk}
+                  </Typography>
+                ))}
               </Stack>
             </Stack>
           </CardContent>
