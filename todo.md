@@ -173,33 +173,33 @@
 
 **Deps:** M3, M4
 
-* [ ] **M5.1 Build.cs 扫描器（Engine/Source + Engine/Plugins）**
+* [x] **M5.1 Build.cs 扫描器（Engine/Source + Engine/Plugins）**
   **Deps:** M3.1, M4.2
   背景：PRD 要从文件路径推 module_code，再映射到 module_system。
 
-  * [ ] **M5.1.1 通过 GitHub API 列目录树并筛 `*.Build.cs`**
+  * [x] **M5.1.1 通过 GitHub API 列目录树并筛 `*.Build.cs`**
     **Deps:** M3.1.3
-  * [ ] **M5.1.2 解析模块名与模块目录**（正则/轻解析，生成映射表）
+  * [x] **M5.1.2 解析模块名与模块目录**（正则/轻解析，生成映射表）
     **Deps:** M5.1.1
-  * [ ] **M5.1.3 输出 `module_map.json`（构建期产物）**
+  * [x] **M5.1.3 输出 `module_map.json`（构建期产物）**
     **Deps:** M5.1.2
 
-* [ ] **M5.2 文件路径 → module_code 归属**
+* [x] **M5.2 文件路径 → module_code 归属**
   **Deps:** M5.1
   背景：每条 commit 有文件列表，需推断所属模块（多标签）。
 
-  * [ ] **M5.2.1 给定文件路径，查最近模块目录归属**
+  * [x] **M5.2.1 给定文件路径，查最近模块目录归属**
     **Deps:** M5.1.3
-  * [ ] **M5.2.2 无法映射：module_code=Unknown**
+  * [x] **M5.2.2 无法映射：module_code=Unknown**
     **Deps:** M5.2.1
 
-* [ ] **M5.3 module_code → module_system（规则映射）**
+* [x] **M5.3 module_code → module_system（规则映射）**
   **Deps:** M3.1.1, M5.2
   背景：按 `module_mapping.yaml` 最长匹配规则映射到系统模块目录。
 
-  * [ ] **M5.3.1 实现最长匹配优先匹配器**
+  * [x] **M5.3.1 实现最长匹配优先匹配器**
     **Deps:** M3.1.1
-  * [ ] **M5.3.2 输出 module_system 多标签**
+  * [x] **M5.3.2 输出 module_system 多标签**
     **Deps:** M5.3.1, M5.2.1
 
 ---
@@ -208,49 +208,49 @@
 
 **Deps:** M3, M4, M5
 
-* [ ] **M6.1 增量状态管理（state/github.json）**
+* [x] **M6.1 增量状态管理（state/github.json）**
   **Deps:** M4.2
   背景：记录 last_seen_sha；按 PRD 选择“失败也更新 SHA”。
 
-  * [ ] **M6.1.1 定义状态文件结构**（sha、上次运行时间、统计、异常标志）
+  * [x] **M6.1.1 定义状态文件结构**（sha、上次运行时间、统计、异常标志）
     **Deps:** M4.2.1
-  * [ ] **M6.1.2 读写状态文件（构建期可更新并提交）**
+  * [x] **M6.1.2 读写状态文件（构建期可更新并提交）**
     **Deps:** M6.1.1
 
-* [ ] **M6.2 拉取 commits（REST API）与过滤策略**
+* [x] **M6.2 拉取 commits（REST API）与过滤策略**
   **Deps:** M6.1, M3.1.3
   背景：回溯 50；每日处理最多 200；过滤 message 以 `Merge` 开头。
 
-  * [ ] **M6.2.1 实现从 last_seen_sha 回溯获取 commit 列表**（含回溯窗口）
+  * [x] **M6.2.1 实现从 last_seen_sha 回溯获取 commit 列表**（含回溯窗口）
     **Deps:** M6.1.2
-  * [ ] **M6.2.2 过滤 merge commits**（message startsWith "Merge"）
+  * [x] **M6.2.2 过滤 merge commits**（message startsWith "Merge"）
     **Deps:** M6.2.1
-  * [ ] **M6.2.3 应用每日上限 200 截断**（记录“数据不完整”事件）
+  * [x] **M6.2.3 应用每日上限 200 截断**（记录“数据不完整”事件）
     **Deps:** M6.2.2
 
-* [ ] **M6.3 commit → 更新项（Markdown）生成/更新**
+* [x] **M6.3 commit → 更新项（Markdown）生成/更新**
   **Deps:** M4.2, M4.3, M5.2, M5.3
   背景：每个 commit 一条更新项；不做自动合并；github_refs 不计入 sources 上限。
 
-  * [ ] **M6.3.1 解析 commit 元数据**（sha、时间、message、author）
+  * [x] **M6.3.1 解析 commit 元数据**（sha、时间、message、author）
     **Deps:** M6.2.1
-  * [ ] **M6.3.2 获取 commit 文件路径列表**（用于详情页与模块映射）
+  * [x] **M6.3.2 获取 commit 文件路径列表**（用于详情页与模块映射）
     **Deps:** M6.3.1
-  * [ ] **M6.3.3 计算 module_code/module_system**（M5）
+  * [x] **M6.3.3 计算 module_code/module_system**（M5）
     **Deps:** M6.3.2, M5.3.2
-  * [ ] **M6.3.4 生成基础 fields**（title/摘要/版本字段占位、change_type 初版规则）
+  * [x] **M6.3.4 生成基础 fields**（title/摘要/版本字段占位、change_type 初版规则）
     **Deps:** M6.3.1
-  * [ ] **M6.3.5 生成/更新 item Markdown**（Evidence first 模板落地）
+  * [x] **M6.3.5 生成/更新 item Markdown**（Evidence first 模板落地）
     **Deps:** M4.2.2, M4.3.2
-  * [ ] **M6.3.6 校验写回结果**（跑 validate-items）
+  * [x] **M6.3.6 校验写回结果**（跑 validate-items）
     **Deps:** M4.4.1, M6.3.5
 
-* [ ] **M6.4 SHA 更新策略（失败也更新）+ 回溯去重**
+* [x] **M6.4 SHA 更新策略（失败也更新）+ 回溯去重**
   **Deps:** M6.2, M6.3
 
-  * [ ] **M6.4.1 last_seen_sha 前移到本次看到的最新 sha（无论成功/失败）**
+  * [x] **M6.4.1 last_seen_sha 前移到本次看到的最新 sha（无论成功/失败）**
     **Deps:** M6.2.1
-  * [ ] **M6.4.2 保留回溯窗口 50 去重逻辑**（基于 item id）
+  * [x] **M6.4.2 保留回溯窗口 50 去重逻辑**（基于 item id）
     **Deps:** M4.3.2, M6.3.5
 
 ---
@@ -259,39 +259,39 @@
 
 **Deps:** M6, M4
 
-* [ ] **M7.1 commit → PR 关联与缓存**
+* [x] **M7.1 commit → PR 关联与缓存**
   **Deps:** M6.3
   背景：增强动机与讨论，离线缓存标题+描述摘要（≤300词）。
 
-  * [ ] **M7.1.1 通过 API 查 commit 关联 PR**
+  * [x] **M7.1.1 通过 API 查 commit 关联 PR**
     **Deps:** M6.3.1
-  * [ ] **M7.1.2 缓存 PR 标题 + 描述摘录（≤300词）**
+  * [x] **M7.1.2 缓存 PR 标题 + 描述摘录（≤300词）**
     **Deps:** M7.1.1
 
-* [ ] **M7.2 PR → Issue 关联与缓存**
+* [x] **M7.2 PR → Issue 关联与缓存**
   **Deps:** M7.1
 
-  * [ ] **M7.2.1 解析 PR 描述中的 Issue 引用**（如 #123）并查询 API
+  * [x] **M7.2.1 解析 PR 描述中的 Issue 引用**（如 #123）并查询 API
     **Deps:** M7.1.2
-  * [ ] **M7.2.2 缓存 Issue 标题 + 描述摘录（≤300词）**
+  * [x] **M7.2.2 缓存 Issue 标题 + 描述摘录（≤300词）**
     **Deps:** M7.2.1
 
-* [ ] **M7.3 评论抓取（最早 3，跳过低信息）**
+* [x] **M7.3 评论抓取（最早 3，跳过低信息）**
   **Deps:** M7.1, M7.2
 
-  * [ ] **M7.3.1 拉取 PR/Issue 评论时间线**
+  * [x] **M7.3.1 拉取 PR/Issue 评论时间线**
     **Deps:** M7.1.1
-  * [ ] **M7.3.2 低信息过滤规则实现**（<30 字符且无链接/引用/代码块则跳过）
+  * [x] **M7.3.2 低信息过滤规则实现**（<30 字符且无链接/引用/代码块则跳过）
     **Deps:** M7.3.1
-  * [ ] **M7.3.3 选取最早 3 条有效评论并写入 github_refs**
+  * [x] **M7.3.3 选取最早 3 条有效评论并写入 github_refs**
     **Deps:** M7.3.2
 
-* [ ] **M7.4 写回 item（github_refs，不计入 sources 上限）**
+* [x] **M7.4 写回 item（github_refs，不计入 sources 上限）**
   **Deps:** M7.1.2, M7.2.2, M7.3.3
 
-  * [ ] **M7.4.1 更新 front matter：github_refs**
+  * [x] **M7.4.1 更新 front matter：github_refs**
     **Deps:** M4.2.1
-  * [ ] **M7.4.2 保持 sources<=3 不受影响**
+  * [x] **M7.4.2 保持 sources<=3 不受影响**
     **Deps:** M4.4.2
 
 ---
