@@ -1,9 +1,9 @@
-import { Index } from "flexsearch";
+import FlexSearch from "flexsearch";
 import { indexItems } from "./index-base";
 import { segmentText } from "./segmenter";
 
 export const createSearchIndex = () => {
-  const index = new Index({
+  const index = new FlexSearch.Index({
     tokenize: "forward",
     cache: true,
     context: true,
