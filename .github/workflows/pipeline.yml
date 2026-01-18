@@ -1,0 +1,59 @@
+name: Pipeline
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: |
+            tools/pipeline/package-lock.json
+            apps/web/package-lock.json
+
+      - name: Install pipeline dependencies
+        run: npm install
+        working-directory: tools/pipeline
+
+      - name: Install web dependencies
+        run: npm install
+        working-directory: apps/web
+
+      - name: Run pipeline
+        run: npm run run
+        working-directory: tools/pipeline
+        env:
+          UE_GITHUB_PAT: ${{ secrets.UE_GITHUB_PAT }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          GOOGLE_CSE_KEY: ${{ secrets.GOOGLE_CSE_KEY }}
+          GOOGLE_CSE_CX: ${{ secrets.GOOGLE_CSE_CX }}
+
+      - name: Build site
+        run: npm run build
+        working-directory: apps/web
+
+      - name: Commit and push generated artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: update site data"
+            git push
+          fi
