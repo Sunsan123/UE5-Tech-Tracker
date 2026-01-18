@@ -1,46 +1,80 @@
-import { Box, Stack, Typography } from "@mui/material";
-import { useMemo, useState } from "react";
+import { Box, CircularProgress, Stack, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import BilingualBlock from "../components/BilingualBlock";
 import InfiniteScrollList from "../components/InfiniteScrollList";
 import ModuleSearchBar from "../components/ModuleSearchBar";
 import ModuleUpdateCard from "../components/ModuleUpdateCard";
-
-const TOTAL_ITEMS = 60;
-
-const buildMockItems = (moduleSystem: string) =>
-  Array.from({ length: TOTAL_ITEMS }, (_, index) => {
-    const itemNumber = index + 1;
-    return {
-      id: `${moduleSystem}-${itemNumber}`,
-      titleZh: `${moduleSystem.toUpperCase()} 更新要点 ${itemNumber}`,
-      titleEn: `${moduleSystem.toUpperCase()} update highlight ${itemNumber}`,
-      summaryZh: "这里将呈现更新摘要与证据摘录的占位内容。",
-      summaryEn: "Placeholder summary for evidence-first update content.",
-      version: "5.4",
-      date: "2024-05-01",
-      tags: ["RHI", "性能", "P1"],
-      credibility: index % 2 === 0 ? ("high" as const) : ("low" as const)
-    };
-  });
+import { loadModuleChunk } from "../data/chunk-loaders";
+import { indexItems } from "../data/index-base";
+import type { ModuleItem } from "../data/types";
+import { latestMajor, versions } from "../data/versions";
 
 const ModulePage = () => {
   const { moduleSystem = "module" } = useParams();
   const [query, setQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(20);
+  const [moduleItems, setModuleItems] = useState<ModuleItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const items = useMemo(() => buildMockItems(moduleSystem), [moduleSystem]);
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    loadModuleChunk<ModuleItem[]>(moduleSystem).then((data) => {
+      if (!mounted) {
+        return;
+      }
+      setModuleItems(data ?? []);
+      setLoading(false);
+      setVisibleCount(20);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [moduleSystem]);
+
+  const indexMap = useMemo(
+    () => new Map(indexItems.map((item) => [item.id, item])),
+    []
+  );
+
+  const latestMajorVersion =
+    latestMajor ??
+    [...versions].sort((a, b) => b.published_at.localeCompare(a.published_at))[0]?.version;
+
   const filtered = useMemo(() => {
-    if (!query.trim()) {
-      return items;
-    }
-    return items.filter((item) =>
-      [item.titleZh, item.titleEn, item.summaryZh, item.summaryEn, item.tags.join(" ")]
-        .join(" ")
-        .toLowerCase()
-        .includes(query.toLowerCase())
+    const normalizedQuery = query.trim().toLowerCase();
+    const byVersion = moduleItems.filter((item) =>
+      latestMajorVersion ? item.version.startsWith(latestMajorVersion) : true
     );
-  }, [items, query]);
+
+    const byQuery = normalizedQuery
+      ? byVersion.filter((item) => {
+          const indexItem = indexMap.get(item.id);
+          return [
+            item.title_zh ?? item.title,
+            item.title_en ?? item.title,
+            indexItem?.summary_zh ?? "",
+            indexItem?.summary_en ?? "",
+            item.tags?.join(" ") ?? ""
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(normalizedQuery);
+        })
+      : byVersion;
+
+    return byQuery
+      .map((item) => ({ item, index: indexMap.get(item.id) }))
+      .sort((a, b) => {
+        const scoreA = a.index?.p1_score ?? 0;
+        const scoreB = b.index?.p1_score ?? 0;
+        if (scoreA !== scoreB) {
+          return scoreB - scoreA;
+        }
+        return (b.item.published_at ?? "").localeCompare(a.item.published_at ?? "");
+      });
+  }, [moduleItems, query, indexMap, latestMajorVersion]);
 
   const visibleItems = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
@@ -61,10 +95,28 @@ const ModulePage = () => {
         />
       </Box>
       <ModuleSearchBar value={query} onChange={setQuery} />
-      <InfiniteScrollList isLoading={false} hasMore={hasMore} onLoadMore={handleLoadMore}>
-        {visibleItems.map((item) => (
-          <ModuleUpdateCard key={item.id} {...item} />
-        ))}
+      <InfiniteScrollList isLoading={loading} hasMore={hasMore} onLoadMore={handleLoadMore}>
+        {loading ? (
+          <Stack alignItems="center" padding={4}>
+            <CircularProgress />
+          </Stack>
+        ) : (
+          visibleItems.map(({ item, index }) => (
+            <ModuleUpdateCard
+              key={item.id}
+              id={item.id}
+              titleZh={item.title_zh ?? item.title}
+              titleEn={item.title_en ?? item.title}
+              summaryZh={index?.summary_zh ?? ""}
+              summaryEn={index?.summary_en ?? ""}
+              version={item.version}
+              date={item.published_at ?? ""}
+              tags={item.tags ?? []}
+              credibility={index?.credibility ?? "low"}
+              thumbnailUrl={item.thumbs?.[0] ?? null}
+            />
+          ))
+        )}
       </InfiniteScrollList>
     </Stack>
   );

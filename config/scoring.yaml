@@ -1,0 +1,13 @@
+scoring:
+  change_type:
+    feature: 5
+    perf: 4
+    fix: 3
+    refactor: 2
+    docs: 1
+    breaking: 6
+    deprecation: 5
+    other: 1
+  high_source: 2
+  source_count: 1
+  conflict: 3

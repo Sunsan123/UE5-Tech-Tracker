@@ -8,6 +8,7 @@
     "id",
     "title",
     "version",
+    "published_at",
     "module_system",
     "module_code",
     "change_type",
@@ -28,6 +29,10 @@
       "minLength": 1
     },
     "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "published_at": {
       "type": "string",
       "minLength": 1
     },
@@ -135,6 +140,13 @@
             "type": "string"
           }
         }
+      }
+    },
+    "thumbs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
       }
     },
     "ai": {

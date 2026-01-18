@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "validate:items": "node src/validate-items.mjs",
-    "build:module-map": "node src/generate-module-map.mjs"
+    "build:module-map": "node src/generate-module-map.mjs",
+    "build:versions": "node src/release-notes.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
+    "sharp": "^0.33.4",
     "yaml": "^2.4.5"
   }
 }

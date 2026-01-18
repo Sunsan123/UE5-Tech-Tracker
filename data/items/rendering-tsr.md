@@ -1,0 +1,65 @@
+---
+id: "rendering-tsr"
+title: "TSR pass refinement"
+version: "5.3"
+published_at: "2023-09-20"
+module_system:
+  - "rendering"
+module_code:
+  - "Renderer"
+change_type: "fix"
+tags:
+  - "TSR"
+  - "Rendering"
+sources:
+  - title: "Unreal Engine 5.3 Release Notes - Rendering"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-3-release-notes"
+    credibility: "high"
+    excerpt_en: "Fixed TSR ghosting artifacts in fast camera pans by improving history clamping."
+    excerpt_zh: "【AI 翻译】通过改进历史裁剪修复了快速镜头移动中的 TSR 重影。"
+    translation_note: "AI 翻译"
+github_refs:
+  - type: "commit"
+    id: "112233a"
+    url: "https://github.com/EpicGames/UnrealEngine/commit/112233a"
+ai:
+  generated_fields:
+    - "benefits"
+    - "risks"
+    - "sources.excerpt_zh"
+  model: "gpt-4.1"
+  generated_at: "2023-09-22T09:00:00Z"
+benefits:
+  summary: "【AI 生成】减少 TSR 重影并提升高速镜头稳定性。"
+  performance: "【AI 生成】更平滑的时序历史更新。"
+  quality: "【AI 生成】改善快速运动画面质量。"
+  workflow: "【AI 生成】降低需手动调参的场景。"
+risks:
+  - "【AI 推断】可能需要重新评估运动模糊调参。"
+---
+
+## Evidence
+
+### Sources
+
+- 【AI 翻译】通过改进历史裁剪修复了快速镜头移动中的 TSR 重影。
+  - Fixed TSR ghosting artifacts in fast camera pans by improving history clamping.
+
+## GitHub References
+
+- Commit: https://github.com/EpicGames/UnrealEngine/commit/112233a
+- Files:
+  - Engine/Source/Runtime/Renderer/Private/PostProcess/TemporalAA.cpp
+  - Engine/Shaders/Private/TemporalSuperResolution.usf
+
+## AI Insights
+
+### Benefits
+
+- 性能：更平滑的时序历史更新。
+- 质量：改善快速运动画面质量。
+- 工作流：降低需手动调参的场景。
+
+### Risks
+
+- 可能需要重新评估运动模糊调参。

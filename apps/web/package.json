@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm run generate:config && vite --host 0.0.0.0 --port 4173",
-    "build": "npm run generate:config && tsc -p tsconfig.json && vite build",
+    "dev": "npm run generate:config && npm run generate:data && vite --host 0.0.0.0 --port 4173",
+    "build": "npm run generate:config && npm run generate:data && tsc -p tsconfig.json && vite build",
     "generate:config": "node scripts/generate-config.mjs",
+    "generate:data": "node scripts/generate-data.mjs",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "lint": "eslint \"src/**/*.{ts,tsx}\""
   },

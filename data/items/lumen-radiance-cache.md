@@ -1,0 +1,78 @@
+---
+id: "lumen-radiance-cache"
+title: "Lumen Radiance Cache update"
+version: "5.4"
+published_at: "2024-05-10"
+module_system:
+  - "lumen"
+module_code:
+  - "Renderer/Lumen"
+change_type: "perf"
+tags:
+  - "Lumen"
+  - "GI"
+sources:
+  - title: "Unreal Engine 5.4 Release Notes - Lumen"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-4-release-notes"
+    credibility: "high"
+    excerpt_en: "Improved the Lumen radiance cache update scheduling to reduce stalls in large scenes."
+    excerpt_zh: "【AI 翻译】改进了 Lumen 辐射缓存更新调度，减少了大型场景中的卡顿。"
+    translation_note: "AI 翻译"
+  - title: "Lumen Radiance Cache Optimization"
+    url: "https://example.com/lumen-radiance-cache"
+    credibility: "low"
+    excerpt_en: "Community profiling shows the cache update workload is smoother after 5.4."
+    excerpt_zh: "【AI 翻译】社区分析显示 5.4 之后缓存更新负载更加平滑。"
+    translation_note: "AI 翻译"
+github_refs:
+  - type: "commit"
+    id: "abc123def"
+    url: "https://github.com/EpicGames/UnrealEngine/commit/abc123def"
+  - type: "pr"
+    id: "12345"
+    url: "https://github.com/EpicGames/UnrealEngine/pull/12345"
+    title: "Optimize Lumen radiance cache updates"
+ai:
+  generated_fields:
+    - "benefits"
+    - "risks"
+    - "sources.excerpt_zh"
+  model: "gpt-4.1"
+  generated_at: "2024-05-11T08:00:00Z"
+benefits:
+  summary: "【AI 生成】减少 Lumen 更新卡顿并提升大型场景稳定性。"
+  performance: "【AI 生成】降低 radiance cache 更新峰值开销。"
+  quality: "【AI 生成】减少光照缓存更新抖动。"
+  workflow: "【AI 生成】更易于在大场景调试 Lumen 性能。"
+risks:
+  - "【AI 推断】旧硬件可能仍需调低缓存更新频率。"
+  - "【AI 推断】需验证 RHI 兼容性。"
+---
+
+## Evidence
+
+### Sources
+
+- 【AI 翻译】改进了 Lumen 辐射缓存更新调度，减少了大型场景中的卡顿。
+  - Improved the Lumen radiance cache update scheduling to reduce stalls in large scenes.
+
+## GitHub References
+
+- Commit: https://github.com/EpicGames/UnrealEngine/commit/abc123def
+- Files:
+  - Engine/Source/Runtime/Renderer/Private/Lumen/LumenRadianceCache.cpp
+  - Engine/Source/Runtime/Renderer/Private/Lumen/LumenScene.cpp
+  - Engine/Shaders/Private/Lumen/LumenRadianceCache.usf
+
+## AI Insights
+
+### Benefits
+
+- 性能：减少 Lumen 更新卡顿。
+- 质量：更平滑的光照缓存更新。
+- 工作流：更易定位大场景性能瓶颈。
+
+### Risks
+
+- 旧硬件可能仍需调低缓存更新频率。
+- 需验证 RHI 兼容性。

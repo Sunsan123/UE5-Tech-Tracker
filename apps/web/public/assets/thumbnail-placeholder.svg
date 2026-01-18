@@ -1,0 +1,7 @@
+<svg width="320" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="180" fill="#E0E7FF"/>
+  <rect x="16" y="16" width="288" height="148" rx="12" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="2"/>
+  <path d="M52 120L110 76L148 108L194 64L268 120" stroke="#6366F1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="106" cy="62" r="12" fill="#818CF8"/>
+  <text x="160" y="150" text-anchor="middle" font-family="Arial" font-size="14" fill="#4F46E5">Thumbnail</text>
+</svg>
