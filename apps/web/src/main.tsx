@@ -19,6 +19,14 @@ const theme = createTheme({
   }
 });
 
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  const fallbackRoot = document.createElement("div");
+  fallbackRoot.id = "root";
+  document.body.appendChild(fallbackRoot);
+}
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
