@@ -50,6 +50,7 @@ touch .env
 
 ```bash
 UE_GITHUB_PAT=你的GitHubToken
+GITHUB_TOKEN=可选的GitHubToken
 OPENAI_API_KEY=你的OpenAIKey
 DEEPSEEK_API_KEY=你的DeepSeekKey
 GOOGLE_CSE_KEY=你的GoogleCSEKey
@@ -65,6 +66,10 @@ GOOGLE_CSE_CX=你的GoogleCSECX
   2) 创建 **Fine-grained token** 或 **Classic token**  
   3) 确保有读取 `EpicGames/UnrealEngine` 私有仓库的权限（只读即可）  
   4) 把 token 填到 `.env`  
+
+- `GITHUB_TOKEN`（可选）  
+  用途：pipeline 读取 GitHub 私有仓库（如 `EpicGames/UnrealEngine`）的备用变量。  
+  说明：若未设置 `GITHUB_TOKEN`，pipeline 会回退使用 `UE_GITHUB_PAT`。如缺少权限会触发 GitHub API 404。  
 
 - `OPENAI_API_KEY` / `DEEPSEEK_API_KEY`  
   用途：AI 生成摘要、翻译等。如果你只用其中一家，可以只配一个。  
@@ -103,6 +108,8 @@ cd tools/pipeline
 npm install
 npm run run
 ```
+
+> **注意：** `npm run run` 会读取 GitHub 私有仓库分支信息与文件树。如果遇到 `GitHub API 404`，通常是因为 `GITHUB_TOKEN`/`UE_GITHUB_PAT` 未配置或没有 `EpicGames/UnrealEngine` 的访问权限。  
 
 随后生成前端可导入数据与构建产物：
 
