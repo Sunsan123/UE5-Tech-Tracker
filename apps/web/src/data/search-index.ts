@@ -7,7 +7,7 @@ export const createSearchIndex = () => {
     tokenize: "forward",
     cache: true,
     context: true,
-    encode: "icase"
+    encode: "simple"
   });
 
   indexItems.forEach((item) => {

@@ -2,13 +2,13 @@ import { Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
 import BilingualBlock from "../components/BilingualBlock";
 import ModuleUpdateCard from "../components/ModuleUpdateCard";
-import { indexItems } from "../data/index-base";
+import { indexItems, type IndexItem } from "../data/index-base";
 import { useFavoritesStore } from "../store/favoritesStore";
 
 const FavoritesPage = () => {
   const favorites = useFavoritesStore((state) => state.items);
   const items = useMemo(() => {
-    const map = new Map(indexItems.map((item) => [item.id, item]));
+    const map = new Map<string, IndexItem>(indexItems.map((item) => [item.id, item]));
     return [...favorites]
       .sort((a, b) => b.ts - a.ts)
       .map((entry) => ({

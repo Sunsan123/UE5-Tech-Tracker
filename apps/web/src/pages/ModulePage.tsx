@@ -6,7 +6,7 @@ import InfiniteScrollList from "../components/InfiniteScrollList";
 import ModuleSearchBar from "../components/ModuleSearchBar";
 import ModuleUpdateCard from "../components/ModuleUpdateCard";
 import { loadModuleChunk } from "../data/chunk-loaders";
-import { indexItems } from "../data/index-base";
+import { indexItems, type IndexItem } from "../data/index-base";
 import type { ModuleItem } from "../data/types";
 import { latestMajor, versions } from "../data/versions";
 
@@ -34,7 +34,7 @@ const ModulePage = () => {
   }, [moduleSystem]);
 
   const indexMap = useMemo(
-    () => new Map(indexItems.map((item) => [item.id, item])),
+    () => new Map<string, IndexItem>(indexItems.map((item) => [item.id, item])),
     []
   );
 

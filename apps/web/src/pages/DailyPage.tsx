@@ -1,17 +1,18 @@
 import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
 import BilingualBlock from "../components/BilingualBlock";
-import { moduleSystems } from "../data/config";
+import { moduleSystems, type ModuleSystem } from "../data/config";
 import { dailyReport } from "../data/daily-reports";
-import { indexItems } from "../data/index-base";
+import { indexItems, type IndexItem } from "../data/index-base";
 
 const DailyPage = () => {
   const itemMap = useMemo(
-    () => new Map(indexItems.map((item) => [item.id, item])),
+    () => new Map<string, IndexItem>(indexItems.map((item) => [item.id, item])),
     []
   );
   const moduleMap = useMemo(
-    () => new Map(moduleSystems.map((module) => [module.id, module])),
+    () =>
+      new Map<string, ModuleSystem>(moduleSystems.map((module) => [module.id, module])),
     []
   );
 
