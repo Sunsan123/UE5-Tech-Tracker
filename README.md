@@ -6,7 +6,85 @@ UE5 Tech Tracker 是一个离线可打开的静态站点，面向技术美术与
 
 ## 使用教程
 
-### 1. 本地开发预览（前端）
+### 0. 先准备好基础环境（新手必看）
+
+> 下面步骤面向“程序小白”，按顺序做即可。
+
+**需要的软件：**
+
+1. **Git**：用于拉取代码。  
+2. **Node.js 18+**（自带 npm）：用于运行前端与 pipeline。  
+
+**如何检查是否安装成功：**
+
+```bash
+git --version
+node -v
+npm -v
+```
+
+如果能看到版本号，说明安装成功。  
+
+---
+
+### 1. 克隆项目并进入目录
+
+```bash
+git clone <你的仓库地址>
+cd UE5-Tech-Tracker
+```
+
+---
+
+### 2. 配置环境变量（非常重要）
+
+项目需要一些密钥用于访问 UnrealEngine 私有仓库、AI 摘要和 Google CSE 搜索。**建议用 `.env` 文件管理**（新手最方便）。
+
+在项目根目录创建 `.env` 文件：
+
+```bash
+touch .env
+```
+
+打开 `.env`，按下面格式填写（没有的可以先留空，但对应功能会不可用）：
+
+```bash
+UE_GITHUB_PAT=你的GitHubToken
+OPENAI_API_KEY=你的OpenAIKey
+DEEPSEEK_API_KEY=你的DeepSeekKey
+GOOGLE_CSE_KEY=你的GoogleCSEKey
+GOOGLE_CSE_CX=你的GoogleCSECX
+```
+
+**变量说明（逐条解释）：**
+
+- `UE_GITHUB_PAT`  
+  用途：读取 UnrealEngine 私有仓库（必须有权限才能访问）。  
+  获取方式：  
+  1) 登录 GitHub → Settings → Developer settings → Personal access tokens  
+  2) 创建 **Fine-grained token** 或 **Classic token**  
+  3) 确保有读取 `EpicGames/UnrealEngine` 私有仓库的权限（只读即可）  
+  4) 把 token 填到 `.env`  
+
+- `OPENAI_API_KEY` / `DEEPSEEK_API_KEY`  
+  用途：AI 生成摘要、翻译等。如果你只用其中一家，可以只配一个。  
+  获取方式：去 OpenAI / DeepSeek 官方控制台生成 API Key。  
+
+- `GOOGLE_CSE_KEY` / `GOOGLE_CSE_CX`  
+  用途：调用 Google CSE（自定义搜索引擎）获取社区资料。  
+  获取方式：  
+  1) Google Cloud 控制台创建项目并启用 **Custom Search API**  
+  2) 获取 API Key → 填 `GOOGLE_CSE_KEY`  
+  3) 在 Google CSE 创建一个搜索引擎 → 拿到 CX → 填 `GOOGLE_CSE_CX`
+
+**提示：**
+
+- `.env` 文件不要提交到仓库（建议加入 `.gitignore`）。  
+- 不配 AI / Google 也可以跑通前端，但生成数据时会缺少对应能力。  
+
+---
+
+### 3. 本地开发预览（前端）
 
 ```bash
 cd apps/web
@@ -16,7 +94,7 @@ npm run dev
 
 浏览器打开 `http://localhost:4173/#/` 预览模块目录页面。
 
-### 2. 生成数据与构建离线站点
+### 4. 生成数据与构建离线站点
 
 前端离线数据依赖于 `data/` 与 `reports/` 目录，建议先运行 pipeline 生成日报与日志，再构建站点：
 
@@ -36,7 +114,7 @@ npm run build
 
 构建完成后打开 `apps/web/dist/index.html`（或构建输出目录）即可在 `file://` 环境离线访问。
 
-### 3. GitHub Actions 自动化
+### 5. GitHub Actions 自动化
 
 仓库内置 `Pipeline` workflow，每日 UTC 0:00 执行一次，并支持手动触发。Secrets 需配置：
 
