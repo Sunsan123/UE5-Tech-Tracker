@@ -35,6 +35,16 @@ export const createBuildLog = ({ startedAt }) => ({
   incomplete_data: false,
   truncated: false,
   quota_exhausted: false,
+  ai: {
+    success: 0,
+    failed: 0,
+    errors: [],
+  },
+  search: {
+    success: 0,
+    failed: 0,
+    errors: [],
+  },
   steps: [],
   error_samples: [],
 });

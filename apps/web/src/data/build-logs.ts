@@ -8,6 +8,12 @@ export type BuildLogStep = {
   quota_exhausted?: boolean;
 };
 
+export type BuildLogTelemetry = {
+  success: number;
+  failed: number;
+  errors: string[];
+};
+
 export type BuildLog = {
   id: string;
   started_at: string;
@@ -16,6 +22,8 @@ export type BuildLog = {
   incomplete_data: boolean;
   truncated: boolean;
   quota_exhausted: boolean;
+  ai: BuildLogTelemetry;
+  search: BuildLogTelemetry;
   steps: BuildLogStep[];
   error_samples: string[];
 };

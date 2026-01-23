@@ -8,6 +8,7 @@ import {
   loadLogs,
   writeLogs,
 } from "./logs.mjs";
+import { readTelemetry } from "./telemetry.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,10 +19,12 @@ const runCommand = async ({
   command,
   args,
   cwd,
+  env,
 }) =>
   new Promise((resolve) => {
     const child = spawn(command, args, {
       cwd,
+      env,
       stdio: ["ignore", "pipe", "pipe"],
     });
 
@@ -51,6 +54,10 @@ const runCommand = async ({
 const main = async () => {
   const startedAt = new Date().toISOString();
   const buildLog = createBuildLog({ startedAt });
+  const runEnv = {
+    ...process.env,
+    PIPELINE_LOG_ID: buildLog.id,
+  };
 
   const steps = [
     {
@@ -58,30 +65,35 @@ const main = async () => {
       command: process.execPath,
       args: ["tools/pipeline/src/generate-module-map.mjs"],
       cwd: repoRoot,
+      env: runEnv,
     },
     {
       name: "Fetch release notes",
       command: process.execPath,
       args: ["tools/pipeline/src/release-notes.mjs"],
       cwd: repoRoot,
+      env: runEnv,
     },
     {
       name: "Validate items",
       command: process.execPath,
       args: ["tools/pipeline/src/validate-items.mjs"],
       cwd: repoRoot,
+      env: runEnv,
     },
     {
       name: "Generate daily report",
       command: process.execPath,
       args: ["tools/pipeline/src/daily-report.mjs"],
       cwd: repoRoot,
+      env: runEnv,
     },
     {
       name: "Generate frontend data",
       command: process.execPath,
       args: ["apps/web/scripts/generate-data.mjs"],
       cwd: repoRoot,
+      env: runEnv,
     },
   ];
 
@@ -89,6 +101,10 @@ const main = async () => {
     const result = await runCommand(step);
     addStepResult(buildLog, result);
   }
+
+  const telemetry = await readTelemetry(buildLog.id);
+  buildLog.ai = telemetry.ai;
+  buildLog.search = telemetry.search;
 
   finalizeBuildLog(buildLog);
   const logs = await loadLogs();
