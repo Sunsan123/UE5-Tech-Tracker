@@ -1,8 +1,12 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { generateModuleMap, writeModuleMap } from "./module-map.mjs";
 
-const resolveOutputPath = () =>
-  path.resolve(process.cwd(), "..", "..", "data", "meta", "module_map.json");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const repoRoot = path.resolve(__dirname, "../..", "..");
+
+const resolveOutputPath = () => path.join(repoRoot, "data", "meta", "module_map.json");
 
 const run = async () => {
   const outputPath = resolveOutputPath();

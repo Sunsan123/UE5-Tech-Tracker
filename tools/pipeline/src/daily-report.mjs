@@ -1,9 +1,12 @@
 import { readFile, readdir, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import YAML from "yaml";
 import { parseFrontMatter } from "./markdown.mjs";
 
-const repoRoot = path.resolve(process.cwd(), "..", "..");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const repoRoot = path.resolve(__dirname, "../..", "..");
 const itemsDir = path.join(repoRoot, "data", "items");
 const configDir = path.join(repoRoot, "config");
 const reportsDir = path.join(repoRoot, "reports", "daily");

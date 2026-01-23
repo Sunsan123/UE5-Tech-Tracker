@@ -1,7 +1,10 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const repoRoot = path.resolve(process.cwd(), "..", "..");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const repoRoot = path.resolve(__dirname, "../..", "..");
 const logsDir = path.join(repoRoot, "reports", "logs");
 const logsFile = path.join(logsDir, "index.json");
 
