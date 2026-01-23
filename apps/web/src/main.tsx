@@ -19,21 +19,31 @@ const theme = createTheme({
   }
 });
 
-const rootElement = document.getElementById("root");
+const mountApp = () => {
+  let rootElement = document.getElementById("root");
 
-if (!rootElement) {
-  const fallbackRoot = document.createElement("div");
-  fallbackRoot.id = "root";
-  document.body.appendChild(fallbackRoot);
+  if (!rootElement) {
+    const fallbackRoot = document.createElement("div");
+    fallbackRoot.id = "root";
+    const mountPoint = document.body ?? document.documentElement;
+    mountPoint.appendChild(fallbackRoot);
+    rootElement = fallbackRoot;
+  }
+
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <HashRouter>
+          <App />
+        </HashRouter>
+      </ThemeProvider>
+    </React.StrictMode>
+  );
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", mountApp, { once: true });
+} else {
+  mountApp();
 }
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <HashRouter>
-        <App />
-      </HashRouter>
-    </ThemeProvider>
-  </React.StrictMode>
-);
