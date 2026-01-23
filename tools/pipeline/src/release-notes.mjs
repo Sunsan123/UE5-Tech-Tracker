@@ -1,5 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const repoRoot = path.resolve(__dirname, "../..", "..");
 
 const RELEASE_NOTES_URLS = [
   "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-release-notes",
@@ -59,7 +64,6 @@ const computeLatestMajor = (versions) => {
 };
 
 const writeVersions = async (versions) => {
-  const repoRoot = path.resolve(process.cwd(), "..", "..");
   const metaDir = path.join(repoRoot, "data", "meta");
   await fs.mkdir(metaDir, { recursive: true });
   const payload = {
