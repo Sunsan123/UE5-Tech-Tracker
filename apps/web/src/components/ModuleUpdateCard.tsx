@@ -19,7 +19,7 @@ interface ModuleUpdateCardProps {
   summaryEn: string;
   version: string;
   date: string;
-  tags: string[];
+  tags: readonly string[];
   credibility: "high" | "low";
   thumbnailUrl?: string | null;
   highlightSnippet?: string | null;
