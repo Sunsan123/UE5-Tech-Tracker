@@ -36,7 +36,11 @@ const fetchJson = async (url, token) => {
 
   if (!response.ok) {
     const body = await response.text();
-    throw new Error(`GitHub API ${response.status}: ${body}`);
+    const hint =
+      response.status === 404 && !token
+        ? " (missing GITHUB_TOKEN/UE_GITHUB_PAT or lacking access to the target repo/branch)"
+        : "";
+    throw new Error(`GitHub API ${response.status}: ${body}${hint}`);
   }
 
   return response.json();

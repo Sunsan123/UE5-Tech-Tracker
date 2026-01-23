@@ -21,18 +21,24 @@ const fetchHtml = async (url) => {
   return response.text();
 };
 
-const parseVersions = (html) => {
-  const linkRegex = /href="([^"]*unreal-engine-5-[^"]*release-notes[^"]*)"[^>]*>([^<]*)<\/a>/gi;
+const buildReleaseNotesUrl = (version) =>
+  `https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-${version.replace(
+    ".",
+    "-",
+  )}-release-notes`;
+
+const parseVersionsFromReleaseLinks = (html) => {
+  const linkRegex = /href="([^"]*unreal-engine-[^"]*release-notes[^"]*)"[^>]*>/gi;
   const versions = new Map();
   let match;
 
   while ((match = linkRegex.exec(html))) {
     const url = match[1];
-    const versionMatch = url.match(/5\.(\d+)/);
+    const versionMatch = url.match(/(\d+)\.(\d+)/);
     if (!versionMatch) {
       continue;
     }
-    const version = `5.${versionMatch[1]}`;
+    const version = `${versionMatch[1]}.${versionMatch[2]}`;
     if (versions.has(version)) {
       continue;
     }
@@ -54,6 +60,35 @@ const parseVersions = (html) => {
   }
 
   return Array.from(versions.values());
+};
+
+const parseVersionsFromDocSwitcher = (html) => {
+  const versionRegex = /application_version=([0-9.]+)/gi;
+  const versions = new Map();
+  let match;
+
+  while ((match = versionRegex.exec(html))) {
+    const version = match[1];
+    if (versions.has(version)) {
+      continue;
+    }
+    versions.set(version, {
+      version,
+      published_at: "",
+      release_notes_url: buildReleaseNotesUrl(version),
+    });
+  }
+
+  return Array.from(versions.values());
+};
+
+const parseVersions = (html) => {
+  const releaseLinks = parseVersionsFromReleaseLinks(html);
+  if (releaseLinks.length > 0) {
+    return releaseLinks;
+  }
+
+  return parseVersionsFromDocSwitcher(html);
 };
 
 const computeLatestMajor = (versions) => {

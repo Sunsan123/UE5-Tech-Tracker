@@ -14,7 +14,7 @@ const run = async () => {
     owner: process.env.GITHUB_OWNER || undefined,
     repo: process.env.GITHUB_REPO || undefined,
     branch: process.env.GITHUB_BRANCH || undefined,
-    token: process.env.GITHUB_TOKEN || undefined,
+    token: process.env.GITHUB_TOKEN || process.env.UE_GITHUB_PAT || undefined,
   });
 
   await writeModuleMap(outputPath, moduleMap);
