@@ -119,7 +119,61 @@ npm install
 npm run build
 ```
 
-构建完成后打开 `apps/web/dist/index.html`（或构建输出目录）即可在 `file://` 环境离线访问。
+构建完成后打开 `site/index.html` 即可在 `file://` 环境离线访问。  
+> **说明：** 本项目的构建输出目录是根目录下的 `site/`（由 `apps/web/vite.config.ts` 的 `outDir` 配置决定），所以不会生成 `apps/web/dist/index.html`。
+
+#### 4.1 生成数据与离线站点后如何使用（详细）
+
+1. **生成数据（必须先做）**  
+   `tools/pipeline` 会产出 `data/` 与 `reports/`，为前端提供可离线索引与日志：
+   ```bash
+   cd tools/pipeline
+   npm install
+   npm run run
+   ```
+2. **构建离线站点（把数据打包进前端）**  
+   ```bash
+   cd apps/web
+   npm install
+   npm run build
+   ```
+3. **离线打开**  
+   直接用浏览器打开 `site/index.html` 即可离线访问，URL 类似：
+   ```
+   file:///你的路径/UE5-Tech-Tracker/site/index.html
+   ```
+4. **本地快速预览（非离线）**  
+   如果只是临时查看结果，可用开发服务器：
+   ```bash
+   cd apps/web
+   npm run dev
+   ```
+   浏览器访问 `http://localhost:4173/#/`。
+
+#### 4.2 第一次构建后，以后每次还需要构建吗？
+
+- **本地开发预览（`npm run dev`）**：  
+  仅当你改了 `apps/web` 的源码或配置才需要重启；数据更新后会自动从本地 `apps/web/src/data` 读取，无需重新安装依赖。  
+- **离线站点（`npm run build`）**：  
+  只有在**数据或前端代码发生变化**时才需要重新构建。  
+  - **数据变化**（例如 `tools/pipeline` 生成了新的 `data/` / `reports/`）→ 需要重新执行 `npm run build`，否则离线站点不会包含新数据。  
+  - **前端代码变化**（UI/逻辑修改）→ 需要重新构建。  
+  - **没有变化** → 不需要反复构建。
+
+#### 4.3 自动化需要什么条件？
+
+要让 GitHub Actions 定时/手动自动化工作流正常运行，需要满足以下条件：
+
+1. **仓库权限与 Secrets 配置**  
+   - `UE_GITHUB_PAT`：必须能读取 `EpicGames/UnrealEngine` 私有仓库（只读即可）。  
+   - `OPENAI_API_KEY` / `DEEPSEEK_API_KEY`：用于 AI 摘要/翻译。  
+   - `GOOGLE_CSE_KEY` / `GOOGLE_CSE_CX`：用于 Google CSE 搜索社区资料。  
+2. **Actions 权限**  
+   - Workflow 需要能写回仓库（依赖 `GITHUB_TOKEN` 权限）。  
+3. **依赖环境**  
+   - GitHub Actions Runner 需能安装 Node.js 18+ 依赖并访问外网 API。  
+4. **触发方式**  
+   - 定时触发（默认 UTC 0:00）或手动触发均可。  
 
 ### 5. GitHub Actions 自动化
 
