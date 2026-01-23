@@ -1,5 +1,9 @@
+import { loadEnv } from "./env.mjs";
+
 const OPENAI_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 const DEEPSEEK_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
+
+await loadEnv();
 
 const callChatApi = async ({ url, apiKey, model, messages }) => {
   const response = await fetch(url, {
