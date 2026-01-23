@@ -27,6 +27,40 @@ const LogsPage = () => {
     }
   };
 
+  const renderTelemetry = (
+    label: string,
+    telemetry: BuildLog["ai"],
+    logId: string,
+  ) => (
+    <Stack spacing={0.5}>
+      <Typography variant="body2">
+        {label}：成功 {telemetry.success} · 失败 {telemetry.failed}
+      </Typography>
+      {telemetry.failed > 0 ? (
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="body2">{label} 失败日志</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            {telemetry.errors.length === 0 ? (
+              <Typography variant="body2" color="text.secondary">
+                暂无错误样例
+              </Typography>
+            ) : (
+              <Stack spacing={0.5}>
+                {telemetry.errors.map((error, index) => (
+                  <Typography key={`${logId}-${label}-${index}`} variant="body2">
+                    - {error}
+                  </Typography>
+                ))}
+              </Stack>
+            )}
+          </AccordionDetails>
+        </Accordion>
+      ) : null}
+    </Stack>
+  );
+
   return (
     <Stack spacing={3}>
       <Typography variant="h4">构建日志</Typography>
@@ -56,6 +90,8 @@ const LogsPage = () => {
                   数据可能不完整（截断/配额耗尽）。
                 </Typography>
               ) : null}
+              {renderTelemetry("AI 生成", latest.ai, latest.id)}
+              {renderTelemetry("网页搜索", latest.search, latest.id)}
             </Stack>
           </CardContent>
         </Card>
@@ -78,6 +114,8 @@ const LogsPage = () => {
                   </Typography>
                 ))}
               </Stack>
+              {renderTelemetry("AI 生成", log.ai, log.id)}
+              {renderTelemetry("网页搜索", log.search, log.id)}
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography variant="body2">

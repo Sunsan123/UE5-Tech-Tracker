@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
+import { recordTelemetry } from "./telemetry.mjs";
 
 const CONFIG_PATH = path.resolve(process.cwd(), "..", "..", "config", "pipeline.yaml");
 
@@ -21,15 +22,22 @@ const buildCseUrl = ({ query, apiKey, cx, start = 1, num = 10 }) => {
 };
 
 export const executeCseQuery = async ({ query, apiKey, cx, start = 1, num = 10 }) => {
-  if (!apiKey || !cx) {
-    throw new Error("Missing Google CSE apiKey or cx.");
+  try {
+    if (!apiKey || !cx) {
+      throw new Error("Missing Google CSE apiKey or cx.");
+    }
+    const response = await fetch(buildCseUrl({ query, apiKey, cx, start, num }));
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`CSE API ${response.status}: ${body}`);
+    }
+    const json = await response.json();
+    await recordTelemetry({ category: "search", status: "success" });
+    return json;
+  } catch (error) {
+    await recordTelemetry({ category: "search", status: "failed", error });
+    throw error;
   }
-  const response = await fetch(buildCseUrl({ query, apiKey, cx, start, num }));
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`CSE API ${response.status}: ${body}`);
-  }
-  return response.json();
 };
 
 export const runCseQueriesWithBudget = async ({ keywords, apiKey, cx }) => {

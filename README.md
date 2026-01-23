@@ -175,6 +175,19 @@ npm run build
 4. **触发方式**  
    - 定时触发（默认 UTC 0:00）或手动触发均可。  
 
+#### 4.4 手动触发方式（本地 / GitHub Actions）
+
+- **本地手动触发**  
+  直接运行 pipeline 主入口即可（会写入构建日志，包含 AI 与网页搜索的成功/失败统计）：  
+  ```bash
+  cd tools/pipeline
+  npm install
+  npm run run
+  ```
+- **GitHub Actions 手动触发**  
+  进入仓库 **Actions** → **Pipeline** 工作流 → 点击 **Run workflow**，即可触发一次执行。  
+  运行完成后，日志会写入 `reports/logs/index.json` 并被前端展示。  
+
 ### 5. GitHub Actions 自动化
 
 仓库内置 `Pipeline` workflow，每日 UTC 0:00 执行一次，并支持手动触发。Secrets 需配置：

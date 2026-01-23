@@ -1,4 +1,5 @@
 import { loadEnv } from "./env.mjs";
+import { recordTelemetry } from "./telemetry.mjs";
 
 const OPENAI_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 const DEEPSEEK_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
@@ -34,11 +35,35 @@ export const generate = async ({ prompt, model = "gpt-4.1-mini" }) => {
   const deepseekKey = process.env.DEEPSEEK_API_KEY;
 
   if (openaiKey) {
-    return callChatApi({ url: OPENAI_ENDPOINT, apiKey: openaiKey, model, messages });
+    try {
+      const content = await callChatApi({
+        url: OPENAI_ENDPOINT,
+        apiKey: openaiKey,
+        model,
+        messages,
+      });
+      await recordTelemetry({ category: "ai", status: "success" });
+      return content;
+    } catch (error) {
+      await recordTelemetry({ category: "ai", status: "failed", error });
+      throw error;
+    }
   }
 
   if (deepseekKey) {
-    return callChatApi({ url: DEEPSEEK_ENDPOINT, apiKey: deepseekKey, model, messages });
+    try {
+      const content = await callChatApi({
+        url: DEEPSEEK_ENDPOINT,
+        apiKey: deepseekKey,
+        model,
+        messages,
+      });
+      await recordTelemetry({ category: "ai", status: "success" });
+      return content;
+    } catch (error) {
+      await recordTelemetry({ category: "ai", status: "failed", error });
+      throw error;
+    }
   }
 
   throw new Error("No LLM API key configured.");
