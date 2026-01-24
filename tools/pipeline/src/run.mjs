@@ -68,9 +68,23 @@ const main = async () => {
       env: runEnv,
     },
     {
+      name: "Sync GitHub commits",
+      command: process.execPath,
+      args: ["tools/pipeline/src/github-sync.mjs"],
+      cwd: repoRoot,
+      env: runEnv,
+    },
+    {
       name: "Fetch release notes",
       command: process.execPath,
       args: ["tools/pipeline/src/release-notes.mjs"],
+      cwd: repoRoot,
+      env: runEnv,
+    },
+    {
+      name: "Run web search",
+      command: process.execPath,
+      args: ["tools/pipeline/src/web-search.mjs"],
       cwd: repoRoot,
       env: runEnv,
     },
