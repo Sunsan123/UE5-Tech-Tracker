@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import YAML from "yaml";
 
 const DEFAULT_OWNER = "EpicGames";
@@ -7,8 +8,12 @@ const DEFAULT_REPO = "UnrealEngine";
 const DEFAULT_BRANCH = "ue5-main";
 const PER_PAGE = 100;
 
-export const resolvePipelineConfigPath = (baseDir = process.cwd()) =>
-  path.resolve(baseDir, "..", "..", "config", "pipeline.yaml");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const repoRoot = path.resolve(__dirname, "../..", "..");
+
+export const resolvePipelineConfigPath = () =>
+  path.resolve(repoRoot, "config", "pipeline.yaml");
 
 export const loadPipelineConfig = async (configPath) => {
   const raw = await fs.readFile(configPath, "utf8");
