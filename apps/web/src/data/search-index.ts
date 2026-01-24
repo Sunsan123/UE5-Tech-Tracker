@@ -1,4 +1,5 @@
 import FlexSearch from "flexsearch";
+import { encode as simpleEncoder } from "flexsearch/dist/module/lang/latin/simple.js";
 import { indexItems } from "./index-base";
 import { segmentText } from "./segmenter";
 
@@ -7,7 +8,7 @@ export const createSearchIndex = () => {
     tokenize: "forward",
     cache: true,
     context: true,
-    encode: "simple"
+    encode: simpleEncoder
   });
 
   indexItems.forEach((item) => {
