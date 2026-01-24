@@ -1,9 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import YAML from "yaml";
 import { recordTelemetry } from "./telemetry.mjs";
 
-const CONFIG_PATH = path.resolve(process.cwd(), "..", "..", "config", "pipeline.yaml");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const repoRoot = path.resolve(__dirname, "../..", "..");
+const CONFIG_PATH = path.resolve(repoRoot, "config", "pipeline.yaml");
 
 const loadPipelineConfig = async () => {
   const raw = await fs.readFile(CONFIG_PATH, "utf8");
