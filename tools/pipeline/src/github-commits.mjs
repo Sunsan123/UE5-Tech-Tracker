@@ -52,7 +52,7 @@ export const fetchCommitsWithBacktrack = async ({
 } = {}) => {
   const commits = [];
   let page = 1;
-  let remainingBacktrack = lastSeenSha ? null : 0;
+  let remainingBacktrack = lastSeenSha ? null : backtrack;
   let foundLastSeen = false;
 
   while (true) {
@@ -65,6 +65,9 @@ export const fetchCommitsWithBacktrack = async ({
     }
 
     for (const entry of batch) {
+      if (remainingBacktrack !== null && remainingBacktrack <= 0) {
+        break;
+      }
       commits.push(entry);
       if (lastSeenSha && entry?.sha === lastSeenSha) {
         foundLastSeen = true;
@@ -74,13 +77,10 @@ export const fetchCommitsWithBacktrack = async ({
 
       if (remainingBacktrack !== null) {
         remainingBacktrack -= 1;
-        if (remainingBacktrack === 0) {
-          break;
-        }
       }
     }
 
-    if (remainingBacktrack !== null && remainingBacktrack === 0) {
+    if (remainingBacktrack !== null && remainingBacktrack <= 0) {
       break;
     }
 
