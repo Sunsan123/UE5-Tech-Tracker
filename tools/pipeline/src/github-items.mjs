@@ -158,6 +158,7 @@ export const buildItemFrontMatter = ({
     id: "",
     title: metadata.title,
     version,
+    published_at: metadata.date ?? new Date().toISOString(),
     module_system: moduleSystems.length > 0 ? moduleSystems : ["unknown"],
     module_code: moduleCodes.length > 0 ? moduleCodes : ["Unknown"],
     change_type: changeType,
